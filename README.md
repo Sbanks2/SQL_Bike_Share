@@ -594,9 +594,9 @@ GROUP BY start_day;
 | Thu	| 224,207	| 373,474 |
 | Fri	| 290,044	| 365,786 |
 | Sat	| 468,331	| 357,082 |
-| Sun	| 403,769	| 311,223 |  
+| Sun	| 403,769	| 311,223 |
+<br>
 
-  
 #### Rides by Day Percentage
 | Start_day	| Casual_rides %	| Member_rides % |
 | - | - | - |
@@ -608,9 +608,9 @@ GROUP BY start_day;
 | Sat	| 23%	| 14% |
 | Sun	| 20%	| 12% |  
 
-
 #### Insight #2: Annual members are mid-week riders and casual riders are weekend road warriors
-Annual members ride very consistently throughout the week with their rides peaking on Wednesday. Casual riders ride less Monday-Thursday but are consistent with their weekday rides. Their rides peak on Saturday while Saturday and Sunday rides account for 43% of their total weekly rides. Overall, annual members ride consistently throughout the week whereas casual riders are primarily weekend road warriors.
+Annual members ride very consistently throughout the week with their rides peaking on Wednesday. Casual riders ride less Monday-Thursday but are consistent with their weekday rides. Their rides peak on Saturday while Saturday and Sunday rides account for 43% of their total weekly rides. Overall, annual members ride consistently throughout the week whereas casual riders are primarily weekend road warriors.  
+<br>
 
 #### Analysis #3: *How do annual members and casual riders ride throughout the month and is there seasonality?*
 
@@ -639,7 +639,7 @@ ORDER BY month_num;
 | Oct	| 189,117	| 288,855 |
 | Nov	| 69,958	| 185,909 |
 | Dec	| 45,076	| 131,295 |  
-
+<br>
   
 #### Rides by Month Percentage
 | Start_month |	Casual_rides |	Member_rides |
@@ -655,7 +655,13 @@ ORDER BY month_num;
 | Sep	| 14%	| 13% |
 | Oct	| 9%	| 11% |
 | Nov	| 3%	| 7% |
-| Dec	| 2%	| 5% |  
+| Dec	| 2%	| 5% |
+
+
+#### Insight #3: Annual members are mid-week riders and casual riders are weekend road warriors
+Annual members ride very consistently throughout the week with their rides peaking on Wednesday. Casual riders ride less Monday-Thursday but are consistent with their weekday rides. Their rides peak on Saturday while Saturday and Sunday rides account for 43% of their total weekly rides. Overall, annual members ride consistently throughout the week whereas casual riders are primarily weekend road warriors.  
+<br>
+
 
 # NEXT, I WANT TO LOOK AT THE MEDIAN RIDE LENGTH BY MEMBER TYPE AND DAY OF THE WEEK. I ALSO WANT TO LOOK AT THE NUMBER OF RIDES BY MEMBER TYPE AND DAY OF THE WEEK AS WELL, TO SEE IF THERE ARE RIDING DIFFERENCES BETWEEN THE TWO MEMBER TYPES.
 ```
