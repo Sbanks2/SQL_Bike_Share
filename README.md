@@ -36,6 +36,7 @@ Determine how annual members and casual riders use Cyclistic bikes differently s
 
 #### Data Sources Used
 * [Divvy Trip Data](https://divvy-tripdata.s3.amazonaws.com/index.html)
+  * [Pricing Table](https://divvybikes.com/pricing)
   * [License](https://divvybikes.com/data-license-agreement)
 * Google Maps
 * [National Weather Service](https://www.weather.gov/wrh/climate)
@@ -272,59 +273,16 @@ WHERE ride_id IS NOT NULL AND
 
 ---
 
-### Prepare
-Now that my data has been combined into one data table, I will begin processing my data for analysis. The tools that will be used for the analysis are SQL through BigQuery, Excel, and Tableau. SQL will be used because combining the CSV files into one data table creates over five million rows of data and Excel cannot handle that much data. Excel will be used to contain my answer sets from querying the data which will be used later for visualizations using Tableau.
+### Process
+Now that my data has been combined into one data table, I will begin processing my data for analysis. The tools that will be used for the analysis are SQL through BigQuery, Excel, and Tableau. SQL will be used because combining the CSV files into one data table creates over five million rows of data and Excel can't handle that much data. Excel will be used to contain my answer sets from querying the data which will be used later for visualizations using Tableau.
 
 Before the data is ready for analysis, it needs to be cleaned to ensure the analysis is as accurate as possible. To do this, unnecessary columns will be removed, new calculated columns will be added, and then those columns will be summarized to see if there is data within the table that doesn't make sense or shouldn't be there.
 
+### Processing Steps
+#### 1. Here ride_id, start_lat, start_lng, end_lat, end_lng, start_station_id, and end_station_id are dropped
+These columns are being dropped because the ride_id column contains unique ride IDs that won't be utilized in the analysis. Start_lat, start_lng, end_lat, and end_lng won't be used because the started_at and ended_at will be used for plotting routes instead. Start_station_id and end_station_id won't be used because they contain numbers, letter-number, and letter identifiers and the started_at and ended_at data communicates more than the IDs do.
 
-# THIS SEGMENT CREATES NEW COLUMNS (MONTH_NUM, START_MONTH, DAY_NUM, START_DAY), IN A TEMPORARY ANSWER TABLE
-
-SELECT start_station_name, end_station_name, started_at, EXTRACT(MONTH FROM started_at) AS month_num,  FORMAT_DATE('%b', started_at) AS start_month, FORMAT_DATE('%u', started_at) AS day_num, FORMAT_DATE('%a', started_at) AS start_day
-FROM bike-share-405316.Bike_Share_Capstone.divvy_tripdata_combined_2021
-ORDER BY start_month DESC
-
-# THIS SEGMENT CREATES A NEW COLUMN, MONTH_NUM, AND THEN POPLULATES THAT COLUMN WITH THE MONTH AS AN INTEGER
-
-ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-ADD COLUMN month_num INT
-
-UPDATE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-SET month_num = EXTRACT(MONTH FROM started_at)
-WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at' = 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at'
-THIS SEGMENT CREATES A NEW COLUMN, START_MONTH, AND THEN POPLULATES THAT COLUMN WITH THE MONTH AS AN ABBREVIATED CHARACTER
-
-ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-ADD COLUMN start_month STRING
-
-UPDATE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-SET start_month = FORMAT_DATE('%b', started_at)
-WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at' = 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at'
-
-
-# THIS SEGMENT CREATES A NEW COLUMN, DAY_NUM, AND THEN POPLULATES THAT COLUMN WITH THE MONTH AS AN INTEGER
-
-ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-ADD COLUMN day_num STRING
-
-UPDATE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-SET day_num = FORMAT_DATE('%u', started_at)
-WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at' = 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at'
-
-# THIS SEGMENT CREATES A NEW COLUMN, START_DAY, AND THEN POPLULATES THAT COLUMN WITH THE DAY AS AN ABBREVIATED CHARACTER
-
-ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-ADD COLUMN start_day STRING
-
-UPDATE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-SET start_day = FORMAT_DATE('%a', started_at)
-WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at' = 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at'
-
-
-
-
-# THIS SEGMENT DROPS THE COLUMNS RIDE_ID, START_LAT, START_LNG, END_LAT, END_LNG, START_STATION_ID, AND END_STATION_ID SINCE I WON’T BE USING THEM
-
+```
 ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
 DROP COLUMN ride_id,
 DROP COLUMN start_lat,
@@ -333,10 +291,81 @@ DROP COLUMN end_lat,
 DROP COLUMN end_lng
 DROP COLUMN start_station_id,
 DROP COLUMN end_station_id;
+```
 
+#### 2. Test creating new columns, (month_num, start_month, day_num, start_day), and view them in the queried temporary table
+These columns are created and queried in a temporary table first before adding them to the data table to ensure that the output is correct.
 
-# THIS SEGMENT ADDS A NEW COLUMN START_TO_END_STATIONS. THEN I ADD THE CONCATENATED STRINGS FROM START_STATION_NAME AND END_STATION_NAME WITH THE DELIMETER “ TO “ WITH A SPACE ON EITHER SIDE, FOR READABILITY, IN ORDER TO MAKE IT EASIER TO CALCULATE AND IDENTIFY COMMON ROUTES BY MEMBER TYPE
+```
+SELECT start_station_name,
+       end_station_name,
+       started_at,
+       EXTRACT(MONTH FROM started_at) AS month_num,
+       FORMAT_DATE('%b', started_at) AS start_month,
+       FORMAT_DATE('%u', started_at) AS day_num,
+       FORMAT_DATE('%a', started_at) AS start_day,
+       EXTRACT(HOUR FROM started_at) AS ride_hour
+FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+ORDER BY start_month DESC
+```
+##### OUTPUT PREVIEW:
+![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/4887b1ee-6d1f-4b0c-bfab-91ec9dde2ab3)
 
+#### 3. Since those columns are created correctly month_num, start_month, day_num, and start_day columns will be created in our permanent data table
+##### The month_num column is being added to the table and the data type is being set to an integer. This is being done so the data can be ordered by month name using the month number.
+
+```
+ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+ADD COLUMN month_num INT
+
+UPDATE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+SET month_num = EXTRACT(MONTH FROM started_at)
+WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at' = 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at'
+```
+
+##### Now the start_month column is created and then adds the month as an abbreviated character to the rows.
+```
+ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+ADD COLUMN start_month STRING
+
+UPDATE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+SET start_month = FORMAT_DATE('%b', started_at)
+WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at' = 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at'
+```
+
+##### The day_num column is being added to the table and the data type is being set to an integer. This is being done so the data can be ordered by day name using the day number.
+```
+ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+ADD COLUMN day_num STRING
+
+UPDATE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+SET day_num = FORMAT_DATE('%u', started_at)
+WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at' = 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at'
+```
+
+##### Now the start_day column is created and then adds the day as an abbreviated character to the rows.
+```
+ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+ADD COLUMN start_day STRING
+
+UPDATE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+SET start_day = FORMAT_DATE('%a', started_at)
+WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at' = 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at'
+```
+
+##### Now the ride_hour column is created and extracted as a number from the started_at column.
+```
+ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+ADD COLUMN ride_hour INT
+
+UPDATE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+SET ride_hour = EXTRACT(HOUR FROM started_at)
+WHERE started_at = started_at
+```
+
+#### 4. Creating start_to_end_stations, ride_duration_minutes, and ride_cost calculated fields for analysis
+##### The start_to_end_stations column is now created with the STRING data type. The values for the column are concatenated strings from start_station_name and end_station_name with the delimiter to, with a space on either side " to" for readability, to make it easier to identify common routes by member type.
+```
 ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
 ADD COLUMN start_to_end_stations STRING
 
@@ -344,11 +373,10 @@ UPDATE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
 SET start_to_end_stations = Concat(start_station_name, " to ", end_station_name)
 WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.start_station_name' = 
       'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.start_station_name'
-
-
+```
  
-# THIS SEGMENT ADDS A NEW COLUMN RIDE_DURATION_MINUTES AND CALCULATES THE DIFFERENCE BETWEEN THE END TIME AND START TIME
-
+#### Now the ride_duration_minutes column is created and the values are calculated by the difference of time between the ended_at and started_at times.
+```
 ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
 ADD COLUMN ride_duration_minutes INT
 
@@ -356,7 +384,68 @@ UPDATE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
 SET ride_duration_minutes = TIMESTAMP_DIFF(ended_at, started_at, MINUTE)
 WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at' = 
       'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at'
- 
+```
+#### Before the ride_cost column is created and added to our permanent data table, the ride_cost calculations using the CASE function will be tested. After reviewing the calculated ride_costs, the data looks good but would look better rounded to two decimal places, so those adjustments will be made when adding ride_cost to the permanent data table. 
+```
+SELECT member_casual,
+      rideable_type,
+       started_at,
+       start_to_end_stations,
+       ride_duration_minutes,
+CASE
+  --Casual rider classic bike cost calculations
+    WHEN ride_duration_minutes < 90 AND member_casual = 'casual' AND rideable_type = 'classic_bike' THEN (1 + (ride_duration_minutes * .17))
+    WHEN ride_duration_minutes <= 180 AND member_casual = 'casual' AND rideable_type = 'classic_bike' THEN 16.50
+    WHEN ride_duration_minutes > 180 AND member_casual = 'casual' AND rideable_type = 'classic_bike' THEN (16.50 + (ride_duration_minutes * .17))
+  --Casual rider docked bike cost calculations
+    WHEN ride_duration_minutes < 90 AND member_casual = 'casual' AND rideable_type = 'docked_bike' THEN (1 + (ride_duration_minutes * .17))
+    WHEN ride_duration_minutes <= 180 AND member_casual = 'casual' AND rideable_type = 'docked_bike' THEN 16.50
+    WHEN ride_duration_minutes > 180 AND member_casual = 'casual' AND rideable_type = 'docked_bike' THEN (16.50 + (ride_duration_minutes * .17))
+  --Casual rider E-bike cost calculations
+    WHEN member_casual = 'casual' AND rideable_type = 'electric_bike' THEN (1 + (ride_duration_minutes * .42))
+
+  --Member rider classic bike cost calculations
+    WHEN ride_duration_minutes <= 45 AND member_casual = 'member' AND rideable_type = 'classic_bike' THEN 0
+    WHEN ride_duration_minutes > 45 AND member_casual = 'member' THEN ride_duration_minutes * .17
+  --Member rider E-bike cost calculations
+    WHEN member_casual = 'member' AND rideable_type = 'electric_bike' THEN ride_duration_minutes * .17 
+    ELSE -1
+  END AS ride_cost
+FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+ORDER BY ride_cost DESC
+```
+
+#### Finally, the ride_cost column is created with a FLOAT64 data type so the calculations can be rounded to two decimal places, and the values are calculated based on the ride_duration_minutes, member_casual, rideable_type, and the pricing table found [here](https://divvybikes.com/pricing). 
+#### ***NOTE: ride cost assumes that casual riders will buy a day pass if they are planning to ride more than 91 minutes since that's when it would cost more than a day pass for classic bikes.***
+```
+ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+ADD COLUMN ride_cost FLOAT64
+
+UPDATE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
+SET ride_cost = ROUND(
+CASE
+  --Casual rider classic bike cost calculations
+    WHEN ride_duration_minutes < 90 AND member_casual = 'casual' AND rideable_type = 'classic_bike' THEN (1 + (ride_duration_minutes * .17))
+    WHEN ride_duration_minutes <= 180 AND member_casual = 'casual' AND rideable_type = 'classic_bike' THEN 16.50
+    WHEN ride_duration_minutes > 180 AND member_casual = 'casual' AND rideable_type = 'classic_bike' THEN (16.50 + (ride_duration_minutes * .17))
+  --Casual rider docked bike cost calculations
+    WHEN ride_duration_minutes < 90 AND member_casual = 'casual' AND rideable_type = 'docked_bike' THEN (1 + (ride_duration_minutes * .17))
+    WHEN ride_duration_minutes <= 180 AND member_casual = 'casual' AND rideable_type = 'docked_bike' THEN 16.50
+    WHEN ride_duration_minutes > 180 AND member_casual = 'casual' AND rideable_type = 'docked_bike' THEN (16.50 + (ride_duration_minutes * .17))
+  --Casual rider E-bike cost calculations
+    WHEN member_casual = 'casual' AND rideable_type = 'electric_bike' THEN (1 + (ride_duration_minutes * .42))
+
+  --Member rider classic bike cost calculations
+    WHEN ride_duration_minutes <= 45 AND member_casual = 'member' AND rideable_type = 'classic_bike' THEN 0
+    WHEN ride_duration_minutes > 45 AND member_casual = 'member' THEN ride_duration_minutes * .17
+  --Member rider E-bike cost calculations
+    WHEN member_casual = 'member' AND rideable_type = 'electric_bike' THEN ride_duration_minutes * .17 
+    ELSE -1
+  END
+,2)
+  WHERE member_casual = member_casual
+```
+
 # Now that I have my table of data set up the way I think I need it, I will begin querying against it to see if any additional cleaning is needed.
 # THIS SEGMENT SHOWS A QUERY OF SUMMARY DATA ON THE RIDE_DURATION_MIN COLUMN TO SEE THE RANGE OF TIME AND MAKE SURE IT MAKES SENSE
 
