@@ -1,59 +1,282 @@
-# THIS SECTION CREATES A NEW TABLE AND COMBINES ALL OF THE CSV FILES INTO ONE DATA TABLE AND EXCLUDES ANY ROWS WITH NULL VALUES
+# Cyclystic Bike-Share Case Study
+## How Does a Bike-Share Navigate Speedy Success?
 
+### Scenario
+Cyclistic is fictional a bike-share company in Chicago, Illinois based on a real ride-share company. The director of
+marketing, Lily Moreno, believes the company’s future success depends on maximizing the number of annual memberships. Therefore, your
+team wants to understand how casual riders and annual members use Cyclistic bikes differently. From these insights, your team will
+design a new marketing strategy to convert casual riders into annual members. But first, Cyclistic executives must approve your
+recommendations, so they must be backed up with compelling data insights and professional data visualizations.
+
+Moreno has set a clear goal: **Design marketing strategies aimed at converting casual riders into annual members**. In order to do
+that, however, the marketing analyst team needs to better understand how annual members and casual riders differ, why casual
+riders would buy a membership, and how digital media could affect their marketing tactics. Moreno and her team are interested in
+analyzing the Cyclistic historical bike trip data to identify trends.
+
+
+---
+
+### Ask
+Moreno has tasked me with answering the question: How do annual members and casual riders use Cyclistic bikes differently?
+
+This markdown report includes the following deliverables:
+* A clear statement of the business task
+* A description of all data sources used
+* Documentation of any cleaning or manipulation of data
+* A summary of the analysis
+* Supporting visualizations and key findings
+* The top three recommendations based on the analysis
+
+---
+
+#### Business Task
+Determine how annual members and casual riders use Cyclistic bikes differently so the marketing team can create a campaign designed to convert casual riders into annual members as Cyclistics future growth strategy.
+
+---
+
+#### Data Sources Used
+* [Divvy Trip Data](https://divvy-tripdata.s3.amazonaws.com/index.html)
+  * [License](https://divvybikes.com/data-license-agreement)
+* Google Maps
+* [National Weather Service](https://www.weather.gov/wrh/climate)
+
+---
+
+### Prepare
+The data that will be used for the analysis is all 12 months of 2021 downloaded in the CSV format. The license to use this data [here](https://divvybikes.com/data-license-agreement). The data is organized in 13 columns based on various fields and those columns/field names are consistent throughout all 12 CSV files. In addition to having the same field names, the data types for those fields in each CSV file are the same, so data types won't need to be changed to combine the 12 files into one. 
+
+These files are saved in a project file on my computer where I will compile them into one large data table using SQL through Big Query. Because of data privacy issues, personally identifiable information has been removed from all files. 
+
+After briefly reviewing the data in Excel, I noticed that there are NULL values within some of the columns, so when I combine the files into one data table I will exclude rows that contain NULL values.
+
+
+#### Combine All 12 CSV Files into One Data Table While Excluding Rows with NULL Values
+```
 CREATE TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021 AS
-(SELECT *
+(
+SELECT *
 FROM `bike-share-405316.Bike_Share_Capstone.202101-divvy-tripdata`
 WHERE ride_id IS NOT NULL AND 
-rideable_type IS NOT NULL AND
-started_at IS NOT NULL AND
-ended_at IS NOT NULL AND
-start_station_name IS NOT NULL AND
-start_station_id IS NOT NULL AND
-end_station_name IS NOT NULL AND
-end_station_id IS NOT NULL AND
-start_lat IS NOT NULL AND
-start_lng IS NOT NULL AND
-end_lat IS NOT NULL AND
-end_lng IS NOT NULL AND
-member_casual IS NOT NULL
+      rideable_type IS NOT NULL AND
+      started_at IS NOT NULL AND
+      ended_at IS NOT NULL AND
+      start_station_name IS NOT NULL AND
+      start_station_id IS NOT NULL AND
+      end_station_name IS NOT NULL AND
+      end_station_id IS NOT NULL AND
+      start_lat IS NOT NULL AND
+      start_lng IS NOT NULL AND
+      end_lat IS NOT NULL AND
+      end_lng IS NOT NULL AND
+      member_casual IS NOT NULL
 
 UNION ALL
 
 SELECT *
 FROM `bike-share-405316.Bike_Share_Capstone.202102-divvy-tripdata`
 WHERE ride_id IS NOT NULL AND 
-rideable_type IS NOT NULL AND
-started_at IS NOT NULL AND
-ended_at IS NOT NULL AND
-start_station_name IS NOT NULL AND
-start_station_id IS NOT NULL AND
-end_station_name IS NOT NULL AND
-end_station_id IS NOT NULL AND
-start_lat IS NOT NULL AND
-start_lng IS NOT NULL AND
-end_lat IS NOT NULL AND
-end_lng IS NOT NULL AND
-member_casual IS NOT NULL
+      rideable_type IS NOT NULL AND
+      started_at IS NOT NULL AND
+      ended_at IS NOT NULL AND
+      start_station_name IS NOT NULL AND
+      start_station_id IS NOT NULL AND
+      end_station_name IS NOT NULL AND
+      end_station_id IS NOT NULL AND
+      start_lat IS NOT NULL AND
+      start_lng IS NOT NULL AND
+      end_lat IS NOT NULL AND
+      end_lng IS NOT NULL AND
+      member_casual IS NOT NULL
 
 UNION ALL
 
 SELECT *
 FROM `bike-share-405316.Bike_Share_Capstone.202103-divvy-tripdata`
 WHERE ride_id IS NOT NULL AND 
-rideable_type IS NOT NULL AND
-started_at IS NOT NULL AND
-ended_at IS NOT NULL AND
-start_station_name IS NOT NULL AND
-start_station_id IS NOT NULL AND
-end_station_name IS NOT NULL AND
-end_station_id IS NOT NULL AND
-start_lat IS NOT NULL AND
-start_lng IS NOT NULL AND
-end_lat IS NOT NULL AND
-end_lng IS NOT NULL AND
-member_casual IS NOT NULL
+      rideable_type IS NOT NULL AND
+      started_at IS NOT NULL AND
+      ended_at IS NOT NULL AND
+      start_station_name IS NOT NULL AND
+      start_station_id IS NOT NULL AND
+      end_station_name IS NOT NULL AND
+      end_station_id IS NOT NULL AND
+      start_lat IS NOT NULL AND
+      start_lng IS NOT NULL AND
+      end_lat IS NOT NULL AND
+      end_lng IS NOT NULL AND
+      member_casual IS NOT NULL
 
-ETC...
+UNION ALL
+
+SELECT *
+FROM `bike-share-405316.Bike_Share_Capstone.202104-divvy-tripdata`
+WHERE ride_id IS NOT NULL AND 
+      rideable_type IS NOT NULL AND
+      started_at IS NOT NULL AND
+      ended_at IS NOT NULL AND
+      start_station_name IS NOT NULL AND
+      start_station_id IS NOT NULL AND
+      end_station_name IS NOT NULL AND
+      end_station_id IS NOT NULL AND
+      start_lat IS NOT NULL AND
+      start_lng IS NOT NULL AND
+      end_lat IS NOT NULL AND
+      end_lng IS NOT NULL AND
+      member_casual IS NOT NULL
+
+UNION ALL
+
+SELECT *
+FROM `bike-share-405316.Bike_Share_Capstone.202105-divvy-tripdata`
+WHERE ride_id IS NOT NULL AND 
+      rideable_type IS NOT NULL AND
+      started_at IS NOT NULL AND
+      ended_at IS NOT NULL AND
+      start_station_name IS NOT NULL AND
+      start_station_id IS NOT NULL AND
+      end_station_name IS NOT NULL AND
+      end_station_id IS NOT NULL AND
+      start_lat IS NOT NULL AND
+      start_lng IS NOT NULL AND
+      end_lat IS NOT NULL AND
+      end_lng IS NOT NULL AND
+      member_casual IS NOT NULL
+
+UNION ALL
+
+SELECT *
+FROM `bike-share-405316.Bike_Share_Capstone.202106-divvy-tripdata`
+WHERE ride_id IS NOT NULL AND 
+      rideable_type IS NOT NULL AND
+      started_at IS NOT NULL AND
+      ended_at IS NOT NULL AND
+      start_station_name IS NOT NULL AND
+      start_station_id IS NOT NULL AND
+      end_station_name IS NOT NULL AND
+      end_station_id IS NOT NULL AND
+      start_lat IS NOT NULL AND
+      start_lng IS NOT NULL AND
+      end_lat IS NOT NULL AND
+      end_lng IS NOT NULL AND
+      member_casual IS NOT NULL
+
+UNION ALL
+
+SELECT *
+FROM `bike-share-405316.Bike_Share_Capstone.202107-divvy-tripdata`
+WHERE ride_id IS NOT NULL AND 
+      rideable_type IS NOT NULL AND
+      started_at IS NOT NULL AND
+      ended_at IS NOT NULL AND
+      start_station_name IS NOT NULL AND
+      start_station_id IS NOT NULL AND
+      end_station_name IS NOT NULL AND
+      end_station_id IS NOT NULL AND
+      start_lat IS NOT NULL AND
+      start_lng IS NOT NULL AND
+      end_lat IS NOT NULL AND
+      end_lng IS NOT NULL AND
+      member_casual IS NOT NULL
+
+UNION ALL
+
+SELECT *
+FROM `bike-share-405316.Bike_Share_Capstone.202108-divvy-tripdata`
+WHERE ride_id IS NOT NULL AND 
+      rideable_type IS NOT NULL AND
+      started_at IS NOT NULL AND
+      ended_at IS NOT NULL AND
+      start_station_name IS NOT NULL AND
+      start_station_id IS NOT NULL AND
+      end_station_name IS NOT NULL AND
+      end_station_id IS NOT NULL AND
+      start_lat IS NOT NULL AND
+      start_lng IS NOT NULL AND
+      end_lat IS NOT NULL AND
+      end_lng IS NOT NULL AND
+      member_casual IS NOT NULL
+
+UNION ALL
+
+SELECT *
+FROM `bike-share-405316.Bike_Share_Capstone.202109-divvy-tripdata`
+WHERE ride_id IS NOT NULL AND 
+      rideable_type IS NOT NULL AND
+      started_at IS NOT NULL AND
+      ended_at IS NOT NULL AND
+      start_station_name IS NOT NULL AND
+      start_station_id IS NOT NULL AND
+      end_station_name IS NOT NULL AND
+      end_station_id IS NOT NULL AND
+      start_lat IS NOT NULL AND
+      start_lng IS NOT NULL AND
+      end_lat IS NOT NULL AND
+      end_lng IS NOT NULL AND
+      member_casual IS NOT NULL
+
+UNION ALL
+
+SELECT *
+FROM `bike-share-405316.Bike_Share_Capstone.202110-divvy-tripdata`
+WHERE ride_id IS NOT NULL AND 
+      rideable_type IS NOT NULL AND
+      started_at IS NOT NULL AND
+      ended_at IS NOT NULL AND
+      start_station_name IS NOT NULL AND
+      start_station_id IS NOT NULL AND
+      end_station_name IS NOT NULL AND
+      end_station_id IS NOT NULL AND
+      start_lat IS NOT NULL AND
+      start_lng IS NOT NULL AND
+      end_lat IS NOT NULL AND
+      end_lng IS NOT NULL AND
+      member_casual IS NOT NULL
+
+UNION ALL
+
+SELECT *
+FROM `bike-share-405316.Bike_Share_Capstone.202111-divvy-tripdata`
+WHERE ride_id IS NOT NULL AND 
+      rideable_type IS NOT NULL AND
+      started_at IS NOT NULL AND
+      ended_at IS NOT NULL AND
+      start_station_name IS NOT NULL AND
+      start_station_id IS NOT NULL AND
+      end_station_name IS NOT NULL AND
+      end_station_id IS NOT NULL AND
+      start_lat IS NOT NULL AND
+      start_lng IS NOT NULL AND
+      end_lat IS NOT NULL AND
+      end_lng IS NOT NULL AND
+      member_casual IS NOT NULL
+
+UNION ALL
+
+SELECT *
+FROM `bike-share-405316.Bike_Share_Capstone.202112-divvy-tripdata`
+WHERE ride_id IS NOT NULL AND 
+      rideable_type IS NOT NULL AND
+      started_at IS NOT NULL AND
+      ended_at IS NOT NULL AND
+      start_station_name IS NOT NULL AND
+      start_station_id IS NOT NULL AND
+      end_station_name IS NOT NULL AND
+      end_station_id IS NOT NULL AND
+      start_lat IS NOT NULL AND
+      start_lng IS NOT NULL AND
+      end_lat IS NOT NULL AND
+      end_lng IS NOT NULL AND
+      member_casual IS NOT NULL
+)
+``` 
+
+---
+
+### Prepare
+Now that my data has been combined into one data table, I will begin processing my data for analysis. The tools that will be used for the analysis are SQL through BigQuery, Excel, and Tableau. SQL will be used because combining the CSV files into one data table creates over five million rows of data and Excel cannot handle that much data. Excel will be used to contain my answer sets from querying the data which will be used later for visualizations using Tableau.
+
+Before the data is ready for analysis, it needs to be cleaned to ensure the analysis is as accurate as possible. To do this, unnecessary columns will be removed, new calculated columns will be added, and then those columns will be summarized to see if there is data within the table that doesn't make sense or shouldn't be there.
+
 
 # THIS SEGMENT CREATES NEW COLUMNS (MONTH_NUM, START_MONTH, DAY_NUM, START_DAY), IN A TEMPORARY ANSWER TABLE
 
