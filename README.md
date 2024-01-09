@@ -539,13 +539,14 @@ Bike Rides:
 | Docked Bike | 312,043 | 0 |
 | Electric Bike | 559,482 | 474,766 |
 | Total | 2,539,893 | 2,048,357 |
-
+<br>
 Bike Usage:
 | Rideable Type | Casual | Member |
 | ------------- | ------ | ------ |
 | Classic Bike | 62% | 78% |
 | Docked Bike | 15% | 0% |
 | Electric Bike | 23% | 22% |
+<br>
 
 ##### Now excluding docked bikes since members don't have docked bike trips
 ```
@@ -563,7 +564,7 @@ Bike Rides:
 | Classic Bike | 1,980,411 | 1,261,548 |
 | Electric Bike | 559,482 | 474,766 |
 | Total | 1,736,314 | 2,048,357 |
-
+<br>
 Bike Usage:
 | Rideable Type | Casual | Member |
 | ------------- | ------ | ------ |
@@ -575,13 +576,13 @@ If we include the docked bike in overall bike use, then annual members and casua
 
 
 #### Analysis #2: *How do annual members and casual riders ride throughout the week?*
+<br>
 
 ```
 SELECT start_day,
        COUNT(CASE WHEN member_casual = 'casual' THEN 1 END) AS casual_rides,
        COUNT(CASE WHEN member_casual = 'member' THEN 1 END) AS member_rides
 FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-WHERE ride_duration_minutes <= 360
 GROUP BY start_day;
 ```
 
@@ -613,6 +614,7 @@ Annual members ride very consistently throughout the week with their rides peaki
 <br>
 
 #### Analysis #3: *How do annual members and casual riders ride throughout the month and is there seasonality?*
+<br>
 
 ```
 SELECT month_num,
@@ -663,14 +665,16 @@ Annual members ride very consistently throughout the week with their rides peaki
 <br>
 
 
-# NEXT, I WANT TO LOOK AT THE MEDIAN RIDE LENGTH BY MEMBER TYPE AND DAY OF THE WEEK. I ALSO WANT TO LOOK AT THE NUMBER OF RIDES BY MEMBER TYPE AND DAY OF THE WEEK AS WELL, TO SEE IF THERE ARE RIDING DIFFERENCES BETWEEN THE TWO MEMBER TYPES.
+#### Analysis #4: *How long are annual members' and casual rider's median trip durations?*
+<br>
+
 ```
-WITH MedianData AS (
+WITH MedianData AS
+(
   SELECT start_day,
          member_casual,
          APPROX_QUANTILES(ride_duration_minutes, 2)[OFFSET(1)] AS ride_median
   FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-  WHERE ride_duration_minutes <= 360
   GROUP BY start_day, member_casual
 )
 
@@ -680,53 +684,45 @@ SELECT start_day,
 FROM MedianData
 GROUP BY start_day;
 ```
-**Ride Duration Median by Day**
-| Start_day	| Casual_ride_median	| Member_ride_median |
-| - | - | - |
-| Mon	| 16	| 9 |
-| Tue	| 14	| 9 |
-| Wed	| 14	| 9 |
-| Thu	| 14	| 9 |
-| Fri	| 15	| 9 |
-| Sat	| 18	| 10 |
-| Sun	| 19	| 10 |
 
+**Ride Duration Median by Day**
+| Start_day	| Mon | Tue | Wed | Thu | Fri | Sat | Sun |
+| - | - | - | - | - | - | - | - |
+| Casual_ride_median	| 16 | 14 | 14 | 14 | 15 | 18 | 19 |
+| Member_ride_median | 9 | 9 | 9 | 9 | 9 | 10 | 10 |
+<br>
 
 ```
-WITH MedianData AS (
-  SELECT start_month,
+WITH MedianData AS
+(
+  SELECT month_num,
+         start_month,
          member_casual,
          APPROX_QUANTILES(ride_duration_minutes, 2)[OFFSET(1)] AS ride_median
   FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-  WHERE ride_duration_minutes <= 360
-  GROUP BY start_month, member_casual
+  GROUP BY month_num, start_month, member_casual
 )
 
-SELECT start_month,
+SELECT month_num,
+       start_month,
        MAX(CASE WHEN member_casual = 'casual' THEN ride_median END) AS casual_ride_median,
        MAX(CASE WHEN member_casual = 'member' THEN ride_median END) AS member_ride_median
 FROM MedianData
-GROUP BY start_month;
+GROUP BY month_num, start_month
+ORDER BY month_num;
 ```
 **Ride Duration Median by Month**
-| Start_month |	Casual_ride_median |	Member_ride_median |
-| - | - | - |
-| Jan	| 12	| 8 |
-| Feb	| 16	| 10 |
-| Mar	| 19	| 10 |
-| Apr	| 18	| 10 |
-| May	| 19	| 10 |
-| Jun	| 18	| 10 |
-| Jul	| 16	| 10 |
-| Aug	| 16	| 10 |
-| Sep	| 15	| 9 |
-| Oct	| 14	| 8 |
-| Nov	| 11	| 7 |
-| Dec	| 11	| 7 |
+| Start_month | Jan	| Feb	| Mar	| Apr	| May	| Jun	| Jul	| Aug	| Sep	| Oct	| Nov	| Dec	|
+| - | - | - | - | - | - | - | - | - | - | - | - | - |
+| Casual_ride_median | 12	| 16	| 19	| 18	| 19	| 18	| 17	| 16	| 15	| 14	| 11	| 11	|
+| Member_ride_median | 8 | 10 | 9 | 10 | 10 | 10 | 10 | 10 | 9 | 8 | 8 | 7 |
+<br>
 
+#### Insight #4: 
+<br>
 
-
-# NOW I WANT TO LOOK AT THE ROUTE FREQUENCY, NUMBER OF RIDES BY START TO END STATION, BY MEMBER TYPE FOR THE TOP 10 ROUTES TRAVELED COMPARED TO TOTAL RIDES.
+#### Analysis 5#: *How are annual members and casual riders riding by route (start_to_end_stations) by looking at their top 10 routes?*
+<br>
 
 CASUAL RIDERS:
 ```
@@ -748,87 +744,27 @@ SELECT member_casual,
        start_to_end_stations,
        count(start_to_end_stations) AS route_frequency
 FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-WHERE ride_duration_minutes <= 360 AND
-      member_casual = 'member'
+WHERE member_casual = 'member'
 GROUP BY member_casual, start_to_end_stations
 ORDER BY route_frequency DESC
 LIMIT 10
 ```
 
 # Review To and from routes. The TO route is very close to the FROM route in frequency which indicates members are most likely commuting 
-
-# HOW MANY DISTINCT ROUTES ARE USED BY MEMBER TYPE?
+Casual Riders:
 ```
 SELECT member_casual,
-       count(DISTINCT(start_to_end_stations)) AS distinct_routes
+       start_to_end_stations,
+       count(start_to_end_stations) AS route_frequency
 FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-WHERE ride_duration_minutes <= 360
-GROUP BY member_casual
+WHERE member_casual = 'casual'
+GROUP BY member_casual, start_to_end_stations
+ORDER BY route_frequency DESC
+LIMIT 10
 ```
 
-| Member_casual	| Distinct_routes |
-| - | - |
-| Member	| 122,461 |
-| Casual	| 124,406 |
-
-# HOW MANY START AND END ROUTES ARE USED BY MEMBER TYPE?
-```
-SELECT member_casual,
-       count(DISTINCT(start_station_name)) AS start_route,
-       count(DISTINCT(end_station_name)) AS end_route
-FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-WHERE ride_duration_minutes <= 360
-GROUP BY member_casual
-```
-
-| Member_casual	| Start_route	| End_route |
-| - | - | - |
-| Member	| 818	| 812 |
-| Casual	| 835	| 834 |
 
 # NOW I’LL SEGMENT OUT THE DAY BY TIME TO SEE IF MEMBERS AND CASUAL RIDERS RIDE DIFFERENTLY DURING PARTS OF THE DAY
-```
-SELECT member_casual,
-       started_at,
-       start_to_end_stations,
-       ride_duration_minutes,
-CASE
-    WHEN EXTRACT(HOUR FROM started_at) < 4 THEN "Late Night- Early Morning"
-    WHEN EXTRACT(HOUR FROM started_at) < 8 THEN "Early Morning"
-    WHEN EXTRACT(HOUR FROM started_at) < 12 THEN "Late Morning"
-    WHEN EXTRACT(HOUR FROM started_at) < 16 THEN "Afternoon"
-    WHEN EXTRACT(HOUR FROM started_at) < 20 THEN "Evening"
-    ELSE "Late Night"
-  END AS day_segments
-FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-WHERE ride_duration_minutes <= 360 
-```
-
-# This segmented the day how I wanted it to, so I’m going to add a new column to my table and then add this day segment data into my column
-```
-UPDATE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-SET day_segment =
-  CASE
-    WHEN EXTRACT(HOUR FROM started_at) < 4 THEN "Late Night- Early Morning"
-    WHEN EXTRACT(HOUR FROM started_at) < 8 THEN "Early Morning"
-    WHEN EXTRACT(HOUR FROM started_at) < 12 THEN "Late Morning"
-    WHEN EXTRACT(HOUR FROM started_at) < 16 THEN "Afternoon"
-    WHEN EXTRACT(HOUR FROM started_at) < 20 THEN "Evening"
-    ELSE "Late Night"
-  END 
-WHERE started_at = started_at
-```
-
-# NOW I’LL SEE HOW THE MEMBERS RIDE COMPARED TO THE CASUAL RIDERS BY DAY SEGMENT
-```
-SELECT member_casual,
-       day_segment,
-       count(day_segment) AS rides_by_segment
-FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-WHERE ride_duration_minutes <= 360
-GROUP BY member_casual, day_segment
-ORDER BY day_segment
-```
 
 # NOW I’LL SEE HOW THE MEMBERS RIDE COMPARED TO THE CASUAL RIDERS BY DAY HOUR
 ```
