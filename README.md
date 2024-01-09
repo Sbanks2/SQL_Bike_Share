@@ -540,6 +540,7 @@ Bike Rides:
 | Electric Bike | 559,482 | 474,766 |
 | Total | 2,539,893 | 2,048,357 |
 <br>
+
 Bike Usage:
 | Rideable Type | Casual | Member |
 | ------------- | ------ | ------ |
@@ -565,6 +566,7 @@ Bike Rides:
 | Electric Bike | 559,482 | 474,766 |
 | Total | 1,736,314 | 2,048,357 |
 <br>
+
 Bike Usage:
 | Rideable Type | Casual | Member |
 | ------------- | ------ | ------ |
