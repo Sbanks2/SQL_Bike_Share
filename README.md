@@ -13,10 +13,14 @@ that, however, the marketing analyst team needs to better understand how annual 
 riders would buy a membership, and how digital media could affect their marketing tactics. Moreno and her team are interested in
 analyzing the Cyclistic historical bike trip data to identify trends.
 
+<br>
 
 ---
 ### Ask
 ---
+
+<br>
+
 Moreno has tasked me with answering the question: How do annual members and casual riders use Cyclistic bikes differently?
 
 This markdown report includes the following deliverables:
@@ -41,9 +45,14 @@ Determine how annual members and casual riders use Cyclistic bikes differently s
 * Google Maps
 * [National Weather Service](https://www.weather.gov/wrh/climate)
 
+<br>
+
 ---
 ### Prepare
 ---
+
+<br>
+
 The data that will be used for the analysis is all 12 months of 2021 downloaded in the CSV format. The license to use this data [here](https://divvybikes.com/data-license-agreement). The data is organized in 13 columns based on various fields and those columns/field names are consistent throughout all 12 CSV files. In addition to having the same field names, the data types for those fields in each CSV file are the same, so data types won't need to be changed to combine the 12 files into one. 
 
 These files are saved in a project file on my computer where I will compile them into one large data table using SQL through Big Query. Because of data privacy issues, personally identifiable information has been removed from all files. 
@@ -271,9 +280,14 @@ WHERE ride_id IS NOT NULL AND
 )
 ``` 
 
+<br>
+
 ---
 ### Process
 --- 
+
+<br>
+
 Now that my data has been combined into one data table, I will begin processing my data for analysis. The tools that will be used for the analysis are SQL through BigQuery, Excel, and Tableau. SQL will be used because combining the CSV files into one data table creates over five million rows of data and Excel can't handle that much data. Excel will be used to contain my answer sets from querying the data which will be used later for visualizations using Tableau.
 
 Before the data is ready for analysis, it needs to be cleaned to ensure the analysis is as accurate as possible. To do this, unnecessary columns will be removed, new calculated columns will be added, and then those columns will be summarized to see if there is data within the table that doesn't make sense or shouldn't be there.
@@ -517,9 +531,13 @@ This was not the expected result. The expected result was that the majority of t
 
 #### Now that the table has been cleaned further and outliers have been identified, it's time to analyze the data.
 
+<br>
+
 ---
 ### Analyze
 ---
+
+<br>
 
 #### Analysis #1: *How are each of the bikes being used by member type?*
 
@@ -819,11 +837,14 @@ Annual members' rides initially peak around 8-9 am which would indicate that the
 
 Casual riders' ride more as the day progresses with no significant peak riding in the first half of the day. Rides peak around 6 pm which would indicate that casual riders are utilizing the bikes after they get off work.
 
-Both groups' ride frequency tapers off after 6 pm.
+Both groups' ride frequency tapers off after 6 pm.  
+
+<br>
 
 ---
 ### Share
 ---
 
-See the visualizations above. For the presentation, please check out the PowerPoint 
+<br>
 
+See the visualizations above. For the presentation, please check out the PowerPoint with the SQL_Bike_Share project [here](https://github.com/Sbanks2/SQL_Bike_Share/tree/main) which includes my recommendations.
