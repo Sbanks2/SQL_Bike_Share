@@ -524,6 +524,7 @@ This was not the expected result. The expected result was that the majority of t
 #### Analysis #1: *How are each of the bikes being used by member type?*
 
 ##### The number of rides by bike type and member type with num_rides as comma-separated values for readability will be viewed next to see how annual members and casual riders are using the different bikes.
+<br>
 ```
 SELECT rideable_type,
        FORMAT('%\'d', count(member_casual)) AS num_rides,
@@ -548,6 +549,10 @@ Bike Usage:
 | Docked Bike | 15% | 0% |
 | Electric Bike | 23% | 22% |
 <br>
+
+![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/734f6c88-cc39-41ab-ab6e-0aebf9c8d7b5)
+
+
 
 ##### Now excluding docked bikes since members don't have docked bike trips
 ```
@@ -574,8 +579,9 @@ Bike Usage:
 | Electric Bike | 27% | 22% |
 
 #### Insight #1: Similar Bike Usage
-If we include the docked bike in overall bike use, then annual members and casual riders use e-bikes almost the same. If we exclude the docked bikes since members don't use them, then casual riders use classic bikes slightly less and e-bikes more. Overall, annual members and casual riders use each bike very similarly.
-
+If we include the docked bike in overall bike use, then annual members and casual riders use e-bikes almost the same. If we exclude the docked bikes since members don't use them, then casual riders use classic bikes slightly less and e-bikes more. Overall, annual members and casual riders use each bike very similarly.  
+<br>
+<br>
 
 #### Analysis #2: *How do annual members and casual riders ride throughout the week?*
 <br>
@@ -610,12 +616,18 @@ GROUP BY start_day;
 | Fri	| 14%	| 14% |
 | Sat	| 23%	| 14% |
 | Sun	| 20%	| 12% |  
-
-#### Insight #2: Annual members are mid-week riders and casual riders are weekend road warriors
-Annual members ride very consistently throughout the week with their rides peaking on Wednesday. Casual riders ride less Monday-Thursday but are consistent with their weekday rides. Their rides peak on Saturday while Saturday and Sunday rides account for 43% of their total weekly rides. Overall, annual members ride consistently throughout the week whereas casual riders are primarily weekend road warriors.  
 <br>
 
-#### Analysis #3: *How do annual members and casual riders ride throughout the month and is there seasonality?*
+![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/ec70da6d-08f8-4c27-910d-92fc51d55388)
+
+
+
+#### Insight #2: Annual members are mid-week riders, and casual riders are weekend road warriors
+Annual members ride very consistently throughout the week with their rides peaking on Wednesday. Casual riders ride less Monday-Thursday but are consistent with their weekday rides. Their rides peak on Saturday while Saturday and Sunday rides account for 43% of their total weekly rides. Overall, annual members ride consistently throughout the week whereas casual riders are primarily weekend road warriors.  
+<br>
+<br>
+
+#### Analysis #3: *How do annual members and casual riders ride throughout the month, and is there seasonality?*
 <br>
 
 ```
@@ -660,14 +672,18 @@ ORDER BY month_num;
 | Oct	| 9%	| 11% |
 | Nov	| 3%	| 7% |
 | Dec	| 2%	| 5% |
+<br>
+
+![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/22113702-837b-4129-bfc4-be7bb74cc4c1)
+
 
 
 #### Insight #3: Annual members are mid-week riders and casual riders are weekend road warriors
-Annual members ride very consistently throughout the week with their rides peaking on Wednesday. Casual riders ride less Monday-Thursday but are consistent with their weekday rides. Their rides peak on Saturday while Saturday and Sunday rides account for 43% of their total weekly rides. Overall, annual members ride consistently throughout the week whereas casual riders are primarily weekend road warriors.  
+Annual members ride very consistently throughout the week with their rides peaking on Wednesday. Casual riders ride less Monday-Thursday but are consistent with their weekday rides. Their rides peak on Saturday, while Saturday and Sunday rides account for 43% of their total weekly rides. Overall, annual members ride consistently throughout the week whereas casual riders are primarily weekend road warriors.  
+<br>
 <br>
 
-
-#### Analysis #4: *How long are annual members' and casual rider's median trip durations?*
+#### Analysis #4: *How long are annual members' and casual riders' median trip durations by day and month?*
 <br>
 
 ```
@@ -693,6 +709,9 @@ GROUP BY start_day;
 | Casual_ride_median	| 16 | 14 | 14 | 14 | 15 | 18 | 19 |
 | Member_ride_median | 9 | 9 | 9 | 9 | 9 | 10 | 10 |
 <br>
+
+![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/25067bd1-a782-403b-8158-270e6e2914c5)
+
 
 ```
 WITH MedianData AS
@@ -720,26 +739,17 @@ ORDER BY month_num;
 | Member_ride_median | 8 | 10 | 9 | 10 | 10 | 10 | 10 | 10 | 9 | 8 | 8 | 7 |
 <br>
 
-#### Insight #4: 
+![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/5de46efd-31d7-4629-9a07-670d73eceadd)
+
+
+#### Insight #4: Again, annual members are mid-week riders and casual riders are weekend road warriors
+Annual members ride consistent durations throughout the week and have slightly longer durations on the weekend indicating that they may use the bikes for fun and entertainment. Casual riders vary in their ride durations throughout the week with the most consistent days being Tuesday through Thursday. Ride durations peak on the weekends indicating that they use the bikes more for fun and entertainment on those days.
+<br>
 <br>
 
 #### Analysis 5#: *How are annual members and casual riders riding by route (start_to_end_stations) by looking at their top 10 routes?*
 <br>
 
-CASUAL RIDERS:
-```
-SELECT member_casual,
-       start_to_end_stations,
-       count(start_to_end_stations) AS route_frequency
-FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
-WHERE ride_duration_minutes <= 360 AND
-      member_casual = 'casual'
-GROUP BY member_casual, start_to_end_stations
-ORDER BY route_frequency DESC
-LIMIT 20
-```
-
-# Review TO and FROM routes. The start/end stations are the same for 9/10 of the most frequently traveled routes, which indicates that casual riders travel around in a loop and return the bike to the same station they rented it from.
 MEMBER RIDERS:
 ```
 SELECT member_casual,
@@ -752,8 +762,10 @@ ORDER BY route_frequency DESC
 LIMIT 10
 ```
 
-# Review To and from routes. The TO route is very close to the FROM route in frequency which indicates members are most likely commuting 
-Casual Riders:
+![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/0e9f877f-e72a-46cd-8e16-2bca140fd7c3)
+
+
+CASUAL RIDERS:
 ```
 SELECT member_casual,
        start_to_end_stations,
@@ -764,11 +776,19 @@ GROUP BY member_casual, start_to_end_stations
 ORDER BY route_frequency DESC
 LIMIT 10
 ```
+![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/947dd2bf-9d78-4b80-819f-24ab98da3222)
 
 
-# NOW I’LL SEGMENT OUT THE DAY BY TIME TO SEE IF MEMBERS AND CASUAL RIDERS RIDE DIFFERENTLY DURING PARTS OF THE DAY
+#### Insight 5: Confirmation that annual members ride more for travel and casual riders ride more for fun and entertainment
+For annual members, the route table here shows that members primarily use the bikes as a means of travel going to one place and then returning from that place to the start point. 
 
-# NOW I’LL SEE HOW THE MEMBERS RIDE COMPARED TO THE CASUAL RIDERS BY DAY HOUR
+9 out of the top ten routes casuals use have the same end station as the start station, which tells me that they are most likely traveling in loops. We know that casual riders most likely use the bikes for entertainment or fun rather than specifically for travel. With that in mind, I looked up the stations on Google Maps and confirmed that at least the top 5 routes are near parks, piers, or bodies of water, which are all good places for fun rides in a loop starting in one place and ending at the starting point.
+<br>
+<br>
+
+#### Analysis 6: *Do annual members and casual riders ride differently throughout the day?*
+<br>
+
 ```
 WITH ridecount AS (
       SELECT member_casual,
@@ -785,4 +805,25 @@ FROM ridecount
 GROUP BY ride_hour
 ORDER BY ride_hour
 ```
+
+OUTPUT:
+
+![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/f92c7a40-e449-4adb-a1a4-0924b315d120)
+
+
+![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/458e86c7-c318-4b91-a0bd-8cc8f269a1dd)
+<br>
+
+#### Insight 6: Annual members peak in the morning and evening whereas casual riders peak in the evening
+Annual members' rides initially peak around 8-9 am which would indicate that the bikes are being used to travel to work or school. Rides then fall for a bit and then progress through the rest of the day. Rides then peak again around 6 pm which would indicate that most members are traveling back home at that time.
+
+Casual riders' ride more as the day progresses with no significant peak riding in the first half of the day. Rides peak around 6 pm which would indicate that casual riders are utilizing the bikes after they get off work.
+
+Both groups' ride frequency tapers off after 6 pm.
+
+---
+### Share
+---
+
+See the visualizations above. For the presentation, please check out the PowerPoint 
 
