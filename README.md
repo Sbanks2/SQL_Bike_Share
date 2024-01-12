@@ -1,5 +1,10 @@
+<p align="center">
+  <img src="https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/1eef2886-21ce-497e-aa2c-8c5898b8fee9" alt="image">
+</p>
+<br>
+
 # Cyclystic Bike-Share Case Study
-## How Does a Bike-Share Navigate Speedy Success?
+## How Does a Bike-Share Navigate Speedy Success?  
 
 ### Scenario
 Cyclistic is fictional a bike-share company in Chicago, Illinois based on a real ride-share company. The director of
