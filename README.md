@@ -7,13 +7,13 @@
 ## How Does a Bike-Share Navigate Speedy Success?  
 
 ### Scenario
-Cyclistic is fictional a bike-share company in Chicago, Illinois based on a real ride-share company. The director of
+Cyclistic is a fictional bike-share company in Chicago, Illinois, based on a real ride-share company. The director of
 marketing, Lily Moreno, believes the company’s future success depends on maximizing the number of annual memberships. Therefore, your
 team wants to understand how casual riders and annual members use Cyclistic bikes differently. From these insights, your team will
 design a new marketing strategy to convert casual riders into annual members. But first, Cyclistic executives must approve your
 recommendations, so they must be backed up with compelling data insights and professional data visualizations.
 
-Moreno has set a clear goal: **Design marketing strategies aimed at converting casual riders into annual members**. In order to do
+Moreno has set a clear goal: **Design marketing strategies aimed at converting casual riders into annual members**. To do
 that, however, the marketing analyst team needs to better understand how annual members and casual riders differ, why casual
 riders would buy a membership, and how digital media could affect their marketing tactics. Moreno and her team are interested in
 analyzing the Cyclistic historical bike trip data to identify trends.
@@ -39,7 +39,7 @@ This markdown report includes the following deliverables:
 ---
 
 #### Business Task
-Determine how annual members and casual riders use Cyclistic bikes differently so the marketing team can create a campaign designed to convert casual riders into annual members as Cyclistics future growth strategy.
+Determine how annual members and casual riders use Cyclistic bikes differently so the marketing team can create a campaign designed to convert casual riders into annual members as Cyclistic's future growth strategy.
 
 ---
 
@@ -58,11 +58,11 @@ Determine how annual members and casual riders use Cyclistic bikes differently s
 
 <br>
 
-The data that will be used for the analysis is all 12 months of 2021 downloaded in the CSV format. The license to use this data [here](https://divvybikes.com/data-license-agreement). The data is organized in 13 columns based on various fields and those columns/field names are consistent throughout all 12 CSV files. In addition to having the same field names, the data types for those fields in each CSV file are the same, so data types won't need to be changed to combine the 12 files into one. 
+The data used for the analysis covers all 12 months of 2021, downloaded in CSV format—the license to use this data is available [here](https://divvybikes.com/data-license-agreement). The data is organized in 13 columns based on various fields, and those column and field names are consistent throughout all 12 CSV files. In addition to having the same field names, the data types for those fields in each CSV file are the same, so data types won't need to be changed to combine the 12 files into one. 
 
-These files are saved in a project file on my computer where I will compile them into one large data table using SQL through Big Query. Because of data privacy issues, personally identifiable information has been removed from all files. 
+These files are saved in a project file on my computer, where I will compile them into one large data table using SQL through BigQuery. Due to data privacy concerns, personally identifiable information has been removed from all files. 
 
-After briefly reviewing the data in Excel, I noticed that there are NULL values within some of the columns, so when I combine the files into one data table I will exclude rows that contain NULL values.
+A preliminary review in Excel revealed Null values in several key fields. These were excluded during the data ingestion phase to ensure data integrity.
 
 
 #### Combine All 12 CSV Files into One Data Table While Excluding Rows with NULL Values
@@ -94,14 +94,14 @@ WHERE ride_id IS NOT NULL AND
 
 <br>
 
-Now that my data has been combined into one data table, I will begin processing my data for analysis. The tools that will be used for the analysis are SQL through BigQuery, Excel, and Tableau. SQL will be used because combining the CSV files into one data table creates over five million rows of data and Excel can't handle that much data. Excel will be used to contain my answer sets from querying the data which will be used later for visualizations using Tableau.
+Now that my data has been combined into one data table, I will begin processing it for analysis. The tools to be used for the analysis include SQL through BigQuery, Excel, and Tableau. SQL will be used because combining the CSV files into a single data table creates over five million rows of data, which Excel cannot handle. Excel will be used to store my answer sets from querying the data, which will later be used for visualizations in Tableau.
 
-Before the data is ready for analysis, it needs to be cleaned to ensure the analysis is as accurate as possible. To do this, unnecessary columns will be removed, new calculated columns will be added, and then those columns will be summarized to see if there is data within the table that doesn't make sense or shouldn't be there.
+Before the data is ready for analysis, it needs to be cleaned to ensure the analysis is as accurate as possible. To achieve this, unnecessary columns will be removed, new calculated columns will be added, and then those columns will be summarized to identify any data within the table that doesn't make sense or shouldn't be there.
 
 ### Cleaning & Manipulation Steps
 ---
 #### 1. Here ride_id, start_lat, start_lng, end_lat, end_lng, start_station_id, and end_station_id are dropped
-These columns are being dropped because the ride_id column contains unique ride IDs that won't be utilized in the analysis. Start_lat, start_lng, end_lat, and end_lng won't be used because the started_at and ended_at will be used for plotting routes instead. Start_station_id and end_station_id won't be used because they contain numbers, letter-number, and letter identifiers and the started_at and ended_at data communicates more than the IDs do.
+These columns are being dropped because the ride_id column contains unique ride IDs that won't be utilized in the analysis. Start_lat, start_lng, end_lat, and end_lng won't be used because the started_at and ended_at columns will be used for plotting routes instead. Start_station_id and end_station_id won't be used because they contain numbers, letter-number combinations, and letter identifiers, and the started_at and ended_at data convey more information than the IDs do.
 
 ```
 ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
@@ -115,7 +115,7 @@ DROP COLUMN end_station_id;
 ```
 
 #### 2. Test creating new columns, (month_num, start_month, day_num, start_day), and view them in the queried temporary table
-These columns are created and queried in a temporary table first before adding them to the data table to ensure that the output is correct.
+These columns are created and queried in a temporary table before being added to the data table, ensuring the output is correct.
 
 ```
 SELECT start_station_name,
@@ -133,7 +133,7 @@ ORDER BY start_month DESC
 ![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/4887b1ee-6d1f-4b0c-bfab-91ec9dde2ab3)
 
 #### 3. Since those columns are created correctly month_num, start_month, day_num, and start_day columns will be created in our permanent data table
-##### The month_num column is being added to the table and the data type is being set to an integer. This is being done so the data can be ordered by month name using the month number.
+##### The month_num column is being added to the table, and the data type is being set to an integer. This is being done so the data can be ordered by month name using the month number.
 
 ```
 ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
@@ -144,7 +144,7 @@ SET month_num = EXTRACT(MONTH FROM started_at)
 WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at' = 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at'
 ```
 
-##### Now the start_month column is created and then adds the month as an abbreviated character to the rows.
+##### Created the start_month column to extract and store abbreviated month names from the started_at timestamp, enabling time-series trend analysis.
 ```
 ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
 ADD COLUMN start_month STRING
@@ -154,7 +154,7 @@ SET start_month = FORMAT_DATE('%b', started_at)
 WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at' = 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at'
 ```
 
-##### The day_num column is being added to the table and the data type is being set to an integer. This is being done so the data can be ordered by day name using the day number.
+##### The day_num column is being added to the table, and the data type is being set to an integer. This is being done so the data can be ordered by day name using the day number.
 ```
 ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
 ADD COLUMN day_num STRING
@@ -196,7 +196,7 @@ WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.
       'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.start_station_name'
 ```
  
-#### Now the ride_duration_minutes column is created and the values are calculated by the difference of time between the ended_at and started_at times.
+#### Now the ride_duration_minutes column is created, and the values are calculated by the difference in time between the ended_at and started_at times.
 ```
 ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
 ADD COLUMN ride_duration_minutes INT
@@ -206,7 +206,7 @@ SET ride_duration_minutes = TIMESTAMP_DIFF(ended_at, started_at, MINUTE)
 WHERE 'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at' = 
       'bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021.started_at'
 ```
-#### Before the ride_cost column is created and added to our permanent data table, the ride_cost calculations using the CASE function will be tested. After reviewing the calculated ride_costs, the data looks good but would look better rounded to two decimal places, so those adjustments will be made when adding ride_cost to the permanent data table. 
+#### Before the ride_cost column is created and added to our permanent data table, the ride_cost calculations using the CASE function will be tested. After reviewing the calculated ride costs, the data appears to be accurate, but would look better rounded to two decimal places. Therefore, these adjustments will be made when adding ride costs to the permanent data table. 
 ```
 SELECT member_casual,
       rideable_type,
@@ -236,8 +236,8 @@ FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
 ORDER BY ride_cost DESC
 ```
 
-#### Finally, the ride_cost column is created with a FLOAT64 data type so the calculations can be rounded to two decimal places, and the values are calculated based on the ride_duration_minutes, member_casual, rideable_type, and the pricing table found [here](https://divvybikes.com/pricing). 
-#### ***NOTE: ride cost assumes that casual riders will buy a day pass if they are planning to ride more than 91 minutes since that's when it would cost more than a day pass for classic bikes.***
+#### Finally, the ride_cost column is created with a FLOAT64 data type, allowing calculations to be rounded to two decimal places. The values are calculated based on ride_duration_minutes, member_casual, rideable_type, and the pricing table found [here](https://divvybikes.com/pricing). 
+#### ***NOTE: Ride cost assumes that casual riders will purchase a day pass if they plan to ride for more than 91 minutes, as that's when it would be more cost-effective than a day pass for classic bikes.***
 ```
 ALTER TABLE bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
 ADD COLUMN ride_cost FLOAT64
@@ -269,7 +269,7 @@ CASE
 
 #### 5. Now that the permanent table is organized for analysis, queries will be run against it to ensure the data is as clean as possible and ready for analysis.
 ##### A query of summary data on the ride_duration_minutes column to make sure that the ride durations make sense.
-There shouldn't be negative ride times since it's impossible to have a negative ride duration. Outliers of data, if any, will also need to be reviewed to see how they are impacting the data.
+There shouldn't be negative ride times since it's impossible to have a negative ride duration. Outliers in the data, if any, will also need to be reviewed to determine their impact on the data.
 ```
 SELECT MAX(ride_duration_minutes) AS max, 
         min(ride_duration_minutes) AS min,  
@@ -277,15 +277,15 @@ SELECT MAX(ride_duration_minutes) AS max,
         APPROX_QUANTILES(ride_duration_minutes, 2)[OFFSET(1)] AS median 
 FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
 ```
-This query shows that there is at least one trip that had a negative ride duration. It also shows that the maximum ride duration was 55,944 minutes, which is 932.4 hours or 38.85 days. Negative ride time should be possible and it was confirmed that the negative ride data was coming from the removal of certain bikes for maintenance, so those rows will be removed from the table.
+This query indicates that there is at least one trip with a negative ride duration. It also shows that the maximum ride duration was 55,944 minutes, which is 932.4 hours or 38.85 days. Negative ride time should not be possible, and it was confirmed that the negative ride data originated from the removal of specific bikes for maintenance. Therefore, those rows will be removed from the table.
 
 ```
 DELETE FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
 WHERE ride_duration_minutes < 0
 ```
-51 rows from the table were removed with the above query.
+Fifty-one rows from the table were removed with the above query.
 
-#### With the above changes, the average is still around 21 minutes and the median is 12 minutes which indicates the outliers on the maximum range could be affecting the average. The following query is checking to see how many rides are over 6 hours long since that seems to be a long time for a bike rental. Then compare it against the total number of rides to see what percent of rides are over 6 hours long.
+#### With the above changes, the average is still around 21 minutes, and the median is 12 minutes, which indicates the outliers on the maximum range could be affecting the average. The following query checks to see how many rides are over 6 hours long, since that is a long time for a bike rental. Then compare it against the total number of rides to determine the percentage of rides that are over 6 hours long.
 ```
 SELECT count(ride_duration_minutes) AS count
 FROM bike-share-405316.Bike_Share_Capstone.clean_divvy_tripdata_combined_2021
@@ -310,7 +310,7 @@ OUTPUT:
 
 ![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/31a5cbf0-8a24-42d0-b845-65025a1c747b)
 
-Looking at the ride_duration over 6 hours shows that the average cost per ride for casual riders is $362.52 and for annual members is $125.11. While the ride duration above 6 hours is .15% of the total rides, it seems odd to spend that amount of money on a ride.
+Examining the ride duration over 6 hours reveals that the average cost per ride for casual riders is $362.52, while for annual members, it is $125.11. The ride duration above 6 hours accounts for only 0.15% of the total rides. The outlier cost values suggest anomalous usage patterns likely unrelated to typical consumer behavior, warranting exclusion from pricing insights.
 
 #### Now to see if the outliers impacted one member type more than the other
 ```
@@ -333,9 +333,9 @@ OUTPUT:
 ![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/9b8baac5-1fd7-4db2-b6dd-6d359f3c13ff)
 
 OUTPUT: casual = 6,175/2,539,894 for .22%, member = 660/2,048,357 for .03%
-This was not the expected result. The expected result was that the majority of the rides over 6 hours come from the members and not casual riders. Without the confirmation that these data points are errors, I will use the median instead of the average, so I don’t skew the results.
+This was not the expected result. The expected result was that the majority of rides over 6 hours come from members, not casual riders. Without confirmation that these data points are errors, I will use the median instead of the average to avoid skewing the results.
 
-#### Now that the table has been cleaned further and outliers have been identified, it's time to analyze the data.
+#### With a cleaned and enriched dataset, the next phase focused on behavioral analysis segmented by rider type.
 
 <br>
 
@@ -347,7 +347,7 @@ This was not the expected result. The expected result was that the majority of t
 
 #### Analysis #1: *How are each of the bikes being used by member type?*
 
-##### The number of rides by bike type and member type with num_rides as comma-separated values for readability will be viewed next to see how annual members and casual riders are using the different bikes.
+##### The number of rides by bike type and member type, with num_rides as comma-separated values for readability, will be viewed next to see how annual members and casual riders are using the different bikes.
 <br>
 ```
 SELECT rideable_type,
@@ -403,7 +403,7 @@ Bike Usage:
 | Electric Bike | 27% | 22% |
 
 #### Insight #1: Similar Bike Usage
-If we include the docked bike in overall bike use, then annual members and casual riders use e-bikes almost the same. If we exclude the docked bikes since members don't use them, then casual riders use classic bikes slightly less and e-bikes more. Overall, annual members and casual riders use each bike very similarly.  
+If we include the docked bike in overall bike use, then annual members and casual riders use e-bikes almost equally. If we exclude the docked bikes since members don't use them, then casual riders use classic bikes slightly less and e-bikes more. Overall, annual members and casual riders use each bike in a very similar manner.  
 <br>
 <br>
 
@@ -447,7 +447,7 @@ GROUP BY start_day;
 
 
 #### Insight #2: Annual members are mid-week riders, and casual riders are weekend road warriors
-Annual members ride very consistently throughout the week with their rides peaking on Wednesday. Casual riders ride less Monday-Thursday but are consistent with their weekday rides. Their rides peak on Saturday while Saturday and Sunday rides account for 43% of their total weekly rides. Overall, annual members ride consistently throughout the week whereas casual riders are primarily weekend road warriors.  
+Annual members ride very consistently throughout the week, with their rides peaking on Wednesday. Casual riders typically ride less on Mondays through Thursdays but are consistent with their weekday rides. Their rides peak on Saturday, while Saturday and Sunday rides account for 43% of their total weekly rides. Overall, annual members ride consistently throughout the week, whereas casual riders are primarily weekend road warriors.  
 <br>
 <br>
 
@@ -502,8 +502,8 @@ ORDER BY month_num;
 
 
 
-#### Insight #3: Annual members are mid-week riders and casual riders are weekend road warriors
-Annual members ride very consistently throughout the week with their rides peaking on Wednesday. Casual riders ride less Monday-Thursday but are consistent with their weekday rides. Their rides peak on Saturday, while Saturday and Sunday rides account for 43% of their total weekly rides. Overall, annual members ride consistently throughout the week whereas casual riders are primarily weekend road warriors.  
+#### Insight #3: Annual members are mid-week riders, and casual riders are weekend road warriors
+Annual members ride very consistently throughout the week, with their rides peaking on Wednesday. Casual riders typically ride less on Mondays through Thursdays but are consistent with their weekday rides. Their rides peak on Saturday, while Saturday and Sunday rides account for 43% of their total weekly rides. Overall, annual members ride consistently throughout the week, whereas casual riders are primarily weekend road warriors.  
 <br>
 <br>
 
@@ -566,8 +566,8 @@ ORDER BY month_num;
 ![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/5de46efd-31d7-4629-9a07-670d73eceadd)
 
 
-#### Insight #4: Again, annual members are mid-week riders and casual riders are weekend road warriors
-Annual members ride consistent durations throughout the week and have slightly longer durations on the weekend indicating that they may use the bikes for fun and entertainment. Casual riders vary in their ride durations throughout the week with the most consistent days being Tuesday through Thursday. Ride durations peak on the weekends indicating that they use the bikes more for fun and entertainment on those days.
+#### Insight #4: Again, annual members are mid-week riders, and casual riders are weekend road warriors
+Annual members ride for consistent durations throughout the week and have slightly longer rides on the weekends, indicating that they may use the bikes for leisure and entertainment. Casual riders vary in their ride durations throughout the week, with the most consistent days being Tuesday through Thursday. Ride durations peak on the weekends, indicating that they use the bikes more for fun and entertainment on those days.
 <br>
 <br>
 
@@ -603,10 +603,10 @@ LIMIT 10
 ![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/947dd2bf-9d78-4b80-819f-24ab98da3222)
 
 
-#### Insight 5: Confirmation that annual members ride more for travel and casual riders ride more for fun and entertainment
-For annual members, the route table here shows that members primarily use the bikes as a means of travel going to one place and then returning from that place to the start point. 
+#### Insight 5: Confirmation that annual members ride more for travel, and casual riders ride more for fun and entertainment
+For annual members, the route table here indicates that they primarily use the bikes as a means of transportation, traveling to one location and then returning to the start point from that location. 
 
-9 out of the top ten routes casuals use have the same end station as the start station, which tells me that they are most likely traveling in loops. We know that casual riders most likely use the bikes for entertainment or fun rather than specifically for travel. With that in mind, I looked up the stations on Google Maps and confirmed that at least the top 5 routes are near parks, piers, or bodies of water, which are all good places for fun rides in a loop starting in one place and ending at the starting point.
+Nine out of the top ten routes that casuals use have the same end station as the start station, which suggests that they are most likely traveling in loops. We know that casual riders most likely use their bikes for entertainment or enjoyment rather than for travel. With that in mind, I looked up the stations on Google Maps and confirmed that at least the top 5 routes are near parks, piers, or bodies of water, all of which are good places for fun rides in a loop that starts and ends at the same point.
 <br>
 <br>
 
@@ -638,10 +638,10 @@ OUTPUT:
 ![image](https://github.com/Sbanks2/SQL_Bike_Share/assets/145416068/458e86c7-c318-4b91-a0bd-8cc8f269a1dd)
 <br>
 
-#### Insight 6: Annual members peak in the morning and evening whereas casual riders peak in the evening
-Annual members' rides initially peak around 8-9 am which would indicate that the bikes are being used to travel to work or school. Rides then fall for a bit and then progress through the rest of the day. Rides then peak again around 6 pm which would indicate that most members are traveling back home at that time.
+#### Insight 6: Annual members peak in the morning and evening, whereas casual riders peak in the evening
+Annual members' rides initially peak around 8-9 am, indicating that the bikes are being used for commuting to work or school. Rides then fall for a bit and then progress through the rest of the day. Rides then peak again around 6 pm, which would indicate that most members are traveling back home at that time.
 
-Casual riders' ride more as the day progresses with no significant peak riding in the first half of the day. Rides peak around 6 pm which would indicate that casual riders are utilizing the bikes after they get off work.
+Casual riders tend to ride more as the day progresses, with no significant peak in riding activity during the first half of the day. Rides peak around 6 pm, indicating that casual riders are using the bikes after they get off work.
 
 Both groups' ride frequency tapers off after 6 pm.  
 
@@ -653,4 +653,4 @@ Both groups' ride frequency tapers off after 6 pm.
 
 <br>
 
-See the visualizations above. For the presentation, please check out the PowerPoint with the SQL_Bike_Share project [here](https://github.com/Sbanks2/SQL_Bike_Share/tree/main) which includes my recommendations.
+See the visualizations above. For the presentation, please review the PowerPoint presentation with the SQL_Bike_Share project [here](https://github.com/Sbanks2/SQL_Bike_Share/tree/main), which includes my recommendations.
