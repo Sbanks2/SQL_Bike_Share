@@ -6,6 +6,11 @@
 # Cyclystic Bike-Share Case Study
 ## How Does a Bike-Share Navigate Speedy Success?  
 
+### Executive Summary
+This project analyzes over 5.5 million bike-share trips using BigQuery SQL and Tableau to uncover behavioral differences between 
+casual and member riders. Through trend analysis, ride segmentation, and cost estimation, I identify key opportunities to convert 
+casual riders and enhance the Cyclistic membership program.
+
 ### Scenario
 Cyclistic is a fictional bike-share company in Chicago, Illinois, based on a real ride-share company. The director of
 marketing, Lily Moreno, believes the company’s future success depends on maximizing the number of annual memberships. Therefore, your
@@ -644,6 +649,12 @@ Annual members' rides initially peak around 8-9 am, indicating that the bikes ar
 Casual riders tend to ride more as the day progresses, with no significant peak in riding activity during the first half of the day. Rides peak around 6 pm, indicating that casual riders are using the bikes after they get off work.
 
 Both groups' ride frequency tapers off after 6 pm.  
+
+
+### Key Takeaways
+- Casual riders favor short, round-trip weekend rides; members ride longer distances on weekdays and usually return to their start location.
+- Scenic stations and loop-style rides are disproportionately favored by casual riders.
+- A conversion strategy focused on weekend value passes and trail-based campaigns is recommended.
 
 <br>
 
